@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "io"
     "os"
     "path/filepath"
     "github.com/rwcarlsen/goexif/exif"
@@ -34,7 +35,11 @@ func main() {
         // Make sure the file is regular (https://golang.org/pkg/os/#FileMode)
         if a.Mode().IsRegular() {
             // Open the file since exif.decode (below) expects something with a Reader interface (https://godoc.org/io#Reader)
-            f, err := os.Open(dirname + a.Name())
+            src := dirname + a.Name()
+            f, err := os.Open(src)
+
+            defer f.Close()
+
             if err != nil {
                 // If we couldn't open it, let's just move on. Not sure if we're getting things like '.' and '..' as contents of our directory
                 continue
@@ -56,8 +61,47 @@ func main() {
 
             m := int(dateTaken.Month())
             y := dateTaken.Year()
-            s := fmt.Sprintf("%s was taken in %d/%d",a.Name(), m, y)
-            fmt.Println(s)
+
+            // Make the directory for year and month, if it doesn't exist already. Grant permissions to the entire planet.
+            destDir := fmt.Sprintf("archive/%d/%d", y, m)
+            os.MkdirAll(destDir, 0777)
+
+            // File destination.
+            dest := fmt.Sprintf("archive/%d/%d/%s", y, m, a.Name())
+
+            // Attempt to copy the file to the archive.
+            _, err = Copy(src, dest)
+            if err != nil {
+                fmt.Println("Unable to copy " + src + " to " + dest)
+                continue
+            }
+
+            fmt.Println("Copied " + src + " to " + dest)
         }
     }
+}
+
+// Courtesy of user edap on http://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+func Copy(src, dst string) (int64, error) {
+    src_file, err := os.Open(src)
+    if err != nil {
+        return 0, err
+    }
+    defer src_file.Close()
+
+    src_file_stat, err := src_file.Stat()
+    if err != nil {
+        return 0, err
+    }
+
+    if !src_file_stat.Mode().IsRegular() {
+        return 0, fmt.Errorf("%s is not a regular file", src)
+    }
+
+    dst_file, err := os.Create(dst)
+    if err != nil {
+        return 0, err
+    }
+    defer dst_file.Close()
+    return io.Copy(dst_file, src_file)
 }

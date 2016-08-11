@@ -4,6 +4,7 @@ import (
     "fmt"
     "os"
     "path/filepath"
+    "github.com/rwcarlsen/goexif/exif"
 )
 
 func main() {
@@ -32,8 +33,31 @@ func main() {
     for _, a := range fi {
         // Make sure the file is regular (https://golang.org/pkg/os/#FileMode)
         if a.Mode().IsRegular() {
-            // Print the file's name and size
-            fmt.Println(a.Name(), a.Size(), "bytes")
+            // Open the file since exif.decode (below) expects something with a Reader interface (https://godoc.org/io#Reader)
+            f, err := os.Open(dirname + a.Name())
+            if err != nil {
+                // If we couldn't open it, let's just move on. Not sure if we're getting things like '.' and '..' as contents of our directory
+                continue
+            }
+
+            // Decode the exif data from the file
+            ex, err := exif.Decode(f)
+            if err != nil {
+                // Just move on. Only image files will return exif data.
+                // TODO handle images that lack exif data.
+                continue
+            }
+
+            // Determine the dateTaken
+            dateTaken, err := ex.DateTime()
+            if err != nil {
+                continue
+            }
+
+            m := int(dateTaken.Month())
+            y := dateTaken.Year()
+            s := fmt.Sprintf("%s was taken in %d/%d",a.Name(), m, y)
+            fmt.Println(s)
         }
     }
 }

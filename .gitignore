@@ -22,3 +22,10 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+test_pictures/*
+test_archive/*
+.DS_Store
+
+# Executable
+PhotoArchiver

@@ -1,0 +1,6 @@
+{
+    "DirSrc": "./test_pictures/",
+    "DirArchive": "./test_archive/",
+    "DirNamePhotos": "Photos",
+    "DirNameVideos": "Videos"
+}

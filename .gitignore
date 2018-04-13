@@ -23,7 +23,6 @@ _testmain.go
 *.test
 *.prof
 
-test_pictures/*
 test_archive/*
 .DS_Store
 

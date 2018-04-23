@@ -9,10 +9,12 @@ import (
 
 /*Constants runtime configuration values */
 type Constants struct {
-	DirSrc        string `json:"DirSrc"`
-	DirArchive    string `json:"DirArchive"`
-	DirNamePhotos string `json:"DirNamePhotos"`
-	DirNameVideos string `json:"DirNameVideos"`
+	DirNamePhotos          string `json:"DirNamePhotos"`
+	DirNameVideos          string `json:"DirNameVideos"`
+	ClassifyOnly           bool   `json:"ClassifyOnly"`
+	MaxFileSizeBytesToTest int64  `json:"MaxFileSizeBytesToTest"`
+	DbAddr                 string `json:"DbAddr"`
+	DbName                 string `json:"DbName"`
 }
 
 /*LoadConstants load constants from json file*/

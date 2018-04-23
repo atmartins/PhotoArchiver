@@ -1,6 +1,8 @@
 {
-    "DirSrc": "./test_pictures/",
-    "DirArchive": "./test_archive/",
     "DirNamePhotos": "Photos",
-    "DirNameVideos": "Videos"
+    "DirNameVideos": "Videos",
+    "ClassifyOnly": true,
+    "MaxFileSizeBytesToTest": 100000,
+    "DbAddr": "localhost:27017",
+    "DbName": "parch"
 }

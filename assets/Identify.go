@@ -1,6 +1,10 @@
 package assets
 
 import (
+	"crypto/md5"
+	"io"
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -46,4 +50,19 @@ func IsVideo(fPath string) bool {
 		return true
 	}
 	return false
+}
+
+// ComputeHash returns the md5 hash of a file
+func ComputeHash(fPath string) (hashStr string, err error) {
+	f, err := os.Open(fPath)
+
+	defer f.Close()
+
+	h := md5.New()
+	if _, err := io.Copy(h, f); err != nil {
+		log.Fatal(err)
+	}
+
+	hashStr = string(h.Sum(nil))
+	return
 }

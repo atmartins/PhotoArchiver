@@ -1,4 +1,4 @@
-package utils
+package files
 
 import (
 	"fmt"
@@ -6,9 +6,7 @@ import (
 	"os"
 )
 
-/*Copy file from src to dst
- * Courtesy of user edap on http://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
- */
+// Copy file from src to dst. Credit: edap on http://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 func Copy(src, dst string) (int64, error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
